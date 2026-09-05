@@ -10,7 +10,6 @@
 #include <boost/json/parse.hpp>
 #include <boost/mysql/datetime.hpp>
 #include <expected>
-#include <iostream>
 #include <optional>
 #include <system_error>
 
@@ -37,16 +36,15 @@ template <typename T>
 inline std::optional<T> convertBodyToObject(const std::string &val,
                                             std::error_code &ec) {
 
-  std::cout << "caled...\n";
   auto obj = boost::json::parse(val, ec);
   if (ec) {
     ec = makeErrorCode(ServerError::Convert_Body_To_Object_Failed);
     return std::nullopt;
   }
-  std::cout << "converting to bodi\n";
+
   auto tryVal = boost::json::try_value_to<T>(obj);
   if (tryVal.has_error()) {
-    std::cout << "couldn\n";
+
     ec = makeErrorCode(ServerError::Convert_Body_To_Object_Failed);
     return std::nullopt;
   }
