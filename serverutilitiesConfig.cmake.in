@@ -1,8 +1,8 @@
 @PACKAGE_INIT@
  include("${CMAKE_CURRENT_LIST_DIR}/ServerUtilitiesTargets.cmake")
 
-find_dependency(jwt-cpp CONFIG REQUIRED)
 find_dependency(boost_beast CONFIG REQUIRED)
+find_dependency(boost_json CONFIG REQUIRED)
 
  set_and_check(ServerUtilities_INCLUDE_DIR "${PACKAGE_PREFIX_DIR}/include/serverutilities")
 
