@@ -14,6 +14,36 @@
 #include <system_error>
 
 namespace ServerUtilities {
+inline std::optional<std::string> decodeBase64(const std::string &input,
+                                               std::error_code &ec) {
+  std::string outPut;
+
+  if (input.empty()) {
+    ec = makeErrorCode(ServerError::Base64_Conversion_To_String_Failed);
+    return std::nullopt;
+  }
+
+  outPut.resize(boost::beast::detail::base64::decoded_size(input.size()));
+  auto result = boost::beast::detail::base64::decode(&outPut[0], input.data(),
+                                                     input.size());
+  outPut.resize(result.first);
+
+  if (result.second < input.size()) {
+    ec = makeErrorCode(ServerError::Base64_Conversion_To_String_Failed);
+    return std::nullopt;
+  }
+  return outPut;
+}
+
+inline std::string encodeToBase64(const std::string &input) {
+  std::string outPut;
+  outPut.resize(boost::beast::detail::base64::encoded_size(input.size()));
+
+  auto result = boost::beast::detail::base64::encode(&outPut[0], input.data(),
+                                                     input.size());
+  outPut.resize(result);
+  return outPut;
+}
 template <typename T>
 inline std::expected<T, std::error_code> convertBodyToObject(
     boost::beast::http::request<boost::beast::http::string_body> &request) {
