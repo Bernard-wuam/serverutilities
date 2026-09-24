@@ -14,24 +14,13 @@
 #include <system_error>
 
 namespace ServerUtilities {
-inline std::optional<std::string> decodeBase64(const std::string &input,
-                                               std::error_code &ec) {
+inline std::string decodeBase64(const std::string &input) {
   std::string outPut;
-
-  if (input.empty()) {
-    ec = makeErrorCode(ServerError::Base64_Conversion_To_String_Failed);
-    return std::nullopt;
-  }
 
   outPut.resize(boost::beast::detail::base64::decoded_size(input.size()));
   auto result = boost::beast::detail::base64::decode(&outPut[0], input.data(),
                                                      input.size());
   outPut.resize(result.first);
-
-  if (result.second < input.size()) {
-    ec = makeErrorCode(ServerError::Base64_Conversion_To_String_Failed);
-    return std::nullopt;
-  }
   return outPut;
 }
 
